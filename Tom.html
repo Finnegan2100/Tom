@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<title> Tom  </title>
+<canvas id = "canvas" width = "1200" height = "600"> Your browser suckz </canvas>
+
+<audio id="breath">
+<source src="breath.mp3" type="audio/mpeg" >
+<source src="breath.ogg" type="audio/ogg" >
+</source>
+
+<audio id="intro">
+<source src="intro.mp3" type="audio/mpeg" >
+<source src="intro.ogg" type="audio/ogg" >
+</source>
+
+<audio id="computer">
+<source src="computer.mp3" type="audio/mpeg" >
+<source src="computer.ogg" type="audio/ogg" >
+</source>
+
+<audio id="ohTom">
+<source src="ohTom.mp3" type="audio/mpeg" >
+<source src="ohTom.ogg" type="audio/ogg" >
+</source>
+
+<audio id="loading">
+<source src="loading.mp3" type="audio/mpeg" >
+<source src="loading.ogg" type="audio/ogg" >
+</source>
+
+<audio id="crash">
+<source src="crash.mp3" type="audio/mpeg" >
+<source src="crash.ogg" type="audio/ogg" >
+</source>
+
+<audio id="meeting">
+<source src="meeting.mp3" type="audio/mpeg" >
+<source src="meeting.ogg" type="audio/ogg" >
+
+</source>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36930625-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+<script>
+
+/*
+The trouble with a lot of Hollywood stuff is - I'm so bored with it. James Bond, Tom Cruise - the character of the hero is locked in concrete.
+He must have a love interest, they must end up in bed, he never talks under torture. The only surprise is whether they're on top of a cliff
+or underwater.
+*/
+
+var theCanvas = document.getElementById("canvas");
+var context = theCanvas.getContext("2d");
+
+var introScreen = true;
+var loveScene1 = false;
+var loveScene2 =false;
+var splash = false;
+var testing = false;
+var processing = false;
+
+var alphaDrain = false;
+
+var introTimer1 = 0;
+var introTimer2 = 0;
+var introTimer3 = 0;
+var introTimer4 = 0;
+
+var crashPlayed1 = false;
+var crashPlayed2 = false;
+var crashPlayed3 = false;
+var crashPlayed4 = false;
+
+var upThetan = false;
+var jumble = true;
+var matchFound = false;
+
+var choices = ["dog","oatmeal","ron","xenu","lorax","yankees","bag","cutout"];
+var hasBeenChosen = false;
+
+var conversation = 0;
+var conversation2 = 0;
+var eMeter = 0;
+
+var breath = document.querySelector("#breath");
+//breath.load();
+
+var intro = document.querySelector("#intro");
+//intro.load();
+intro.loop = true;
+
+var computer = document.querySelector("#computer");
+//computer.load();
+computer.volume = .6;
+computer.loop = true;
+
+var ohTom = document.querySelector("#ohTom");
+//ohTom.load();
+var ohTomPlayed = false;
+
+var loading = document.querySelector("#loading");
+//loading.load();
+
+var crash = document.querySelector("#crash");
+//crash.load();
+var crashPlayed = false;
+
+var meeting = document.querySelector("#meeting");
+//crash.load();
+var meetingPlayed = false;
+
+
+var spriteObject = 
+{
+sourceX: 0,
+sourceY: 0,
+sourceWidth: 0,
+sourceHeight: 0,
+width: 50,
+height: 50,
+x: 0,
+y: 0,
+z: 0,
+vx: 0,
+vy: 0,
+rotation: 180,
+gravity: 4.0,
+
+centerX: function()
+{
+return this.x + (this.width / 2);
+},
+centerY: function()
+{
+return this.y + (this.height / 2);
+},
+halfWidth: function()
+{
+return this.width / 2;
+},
+halfHeight: function()
+{
+return this.height / 2;
+}
+};
+
+
+var signImage = new Image();
+signImage.src = "sign.png";
+
+var offices = Object.create(spriteObject);
+offices.x = -200;
+offices.y = -100;
+offices.width = 1900;
+offices.height = 700;
+
+var officesImage = new Image();
+officesImage.src = "offices.png";
+
+
+var sign = Object.create(spriteObject);
+sign.sourceX = 0;
+sign.x = 310;
+sign.y = 20;
+sign.width = 500;
+sign.height = 100;
+
+var logoImage = new Image();
+logoImage.src = "Logo4.png";
+
+var logo = Object.create(spriteObject);
+logo.sourceX = 0;
+logo.x = 450;
+logo.y = 340;
+logo.width = 225;
+logo.height = 200;
+
+var lRonImage = new Image();
+lRonImage.src = "lRon.png";
+
+var lRon = Object.create(spriteObject);
+lRon.sourceX = 0;
+lRon.x = 400;
+lRon.y = 0;
+lRon.width = 320;
+lRon.height = 250;
+
+var thetanImage = new Image();
+thetanImage.src = "thetan.png";
+
+var thetan = Object.create(spriteObject);
+
+thetan.sourceX = 0;
+thetan.sourceY = 0;
+thetan.x = 200;
+thetan.y = 100;
+thetan.width = 150;
+thetan.height = 300;
+
+var thetanLeftImage = new Image();
+thetanLeftImage.src = "thetanLeft.png";
+
+var thetanLeft = Object.create(spriteObject);
+
+thetanLeft.sourceX = 150;
+thetanLeft.sourceY = 0;
+thetanLeft.x = 0;
+thetanLeft.y = 100;
+thetanLeft.width = 150;
+thetanLeft.height = 300;
+
+var tomHeadImage = new Image();
+tomHeadImage.src = "tomHead.png";
+
+var tomHead = Object.create(spriteObject);
+
+tomHead.x = 120;
+tomHead.y = 100;
+tomHead.width = 100;
+tomHead.height = 150;
+
+var bedroom = Object.create(spriteObject);
+bedroom.x = 160;
+bedroom.y = -100;
+bedroom.width = 1000;
+bedroom.height = 850;
+
+var bedroomImage = new Image();
+bedroomImage.src = "bedroom.png";
+
+var tom = Object.create(spriteObject);
+tom.x = canvas.width / 2;
+tom.y = canvas.height / 2;
+tom.z = 200;
+tom.width = 150;
+tom.height = 175;
+
+var tomImage = new Image();
+tomImage.src = "tom.png";
+
+var tom2 = Object.create(spriteObject);
+tom2.x = 1000;
+tom2.y = 200;
+tom2.z = 200;
+tom2.width = 150;
+tom2.height = 175;
+
+var tom2Image = new Image();
+tom2Image.src = "tom.png";
+
+var dog = Object.create(spriteObject);
+dog.x = 0;
+dog.y = 200;
+dog.width = 200;
+dog.height = 180;
+
+var dogImage = new Image();
+dogImage.src = "dog.png";
+
+var question = Object.create(spriteObject);
+question.x = 0;
+question.y = 170;
+question.width = 100;
+question.height = 200;
+
+var questionImage = new Image();
+questionImage.src = "question.png";
+
+var oatmeal = Object.create(spriteObject);
+oatmeal.x = 0;
+oatmeal.y = 200;
+oatmeal.width = 300;
+oatmeal.height = 150;
+
+var oatmealImage = new Image();
+oatmealImage.src = "oatmeal.png";
+
+var cutout = Object.create(spriteObject);
+cutout.x = 0;
+cutout.y = 200;
+cutout.width = 150;
+cutout.height = 300;
+
+var cutoutImage = new Image();
+cutoutImage.src = "cutout.png";
+
+var bag = Object.create(spriteObject);
+bag.x = 0;
+bag.y = 200;
+bag.width = 200;
+bag.height = 250;
+
+var bagImage = new Image();
+bagImage.src = "bag.png";
+
+var ron = Object.create(spriteObject);
+ron.x = 0;
+ron.y = 200;
+ron.width = 300;
+ron.height = 150;
+
+var ronImage = new Image();
+ronImage.src = "ron.png";
+
+var xenu = Object.create(spriteObject);
+xenu.x = 0;
+xenu.y = 200;
+xenu.width = 300;
+xenu.height = 150;
+
+var xenuImage = new Image();
+xenuImage.src = "xenu.png";
+
+var lorax = Object.create(spriteObject);
+lorax.x = 0;
+lorax.y = 200;
+lorax.width = 300;
+lorax.height = 150;
+
+var loraxImage = new Image();
+loraxImage.src = "lorax.png";
+
+var yankees = Object.create(spriteObject);
+yankees.x = 0;
+yankees.y = 200;
+yankees.width = 575;
+yankees.height = 225;
+
+var yankeesImage = new Image();
+yankeesImage.src = "yankees.png";
+
+var country = Object.create(spriteObject);
+country.x = -200;
+country.y = -250;
+country.width = 2100;
+country.height = 700;
+
+var countryImage = new Image();
+countryImage.src = "country.png";
+
+
+
+
+
+function onKeyDown(event)
+{
+if (event.keyCode === 37)
+{
+
+}
+if (event.keyCode === 85)
+{
+question.vx = 6;
+tom.vx = -6;
+tom2.vx = -6;
+}
+if (event.keyCode === 38 && upThetan === false)
+{
+thetan.sourceX = 150;
+thetanLeft.sourceX = 0;
+eMeter++;
+upThetan = true;
+}
+if (event.keyCode === 40 && upThetan === true)
+{
+thetan.sourceX = 0;
+thetanLeft.sourceX = 150;
+eMeter++;
+upThetan = false;
+}
+}
+
+function onKeyUp(event)
+{
+if (event.keyCode === 37)
+{
+
+}
+if (event.keyCode === 39)
+{
+dog.vx = 0;
+tom.vx = 0;
+}
+
+}
+
+function onIntroClick(event)
+{
+introScreen = false;
+splash = true;
+}
+function onClick(event)
+{
+conversation++;
+}
+function onClick2(event)
+{
+conversation2++;
+}
+
+
+function dots()
+{
+if (loveScene1 === false && loveScene2 === false)
+{
+var spot1 = 150;
+context.fillStyle = "007700";
+context.fillText(".",spot1,350);
+}
+}
+function dots2()
+{
+if (loveScene1 === false && loveScene2 === false)
+{
+var spot1 = 150;
+context.fillStyle = "007700";
+context.fillText(".",spot1 + 20,350);
+}
+}
+function dots3()
+{
+if (loveScene1 === false && loveScene2 === false)
+{
+var spot1 = 150;
+context.fillStyle = "007700";
+context.fillText(".",spot1 + 40,350);
+matchFound = true;
+}
+}
+update();
+
+function update()
+{
+
+//chosen = "oatmeal";
+
+
+window.setTimeout(update,33);
+context.clearRect(0,0,canvas.width,canvas.height);
+
+
+if (introScreen === true)
+{
+introTimer1++;
+
+
+if (introTimer1 > 50)
+{
+if (crashPlayed1 === false)
+{
+crash.play();
+crashPlayed1 = true;
+}
+introTimer1 = 50;
+introTimer2++
+context.font = "25px verdana";
+context.fillStyle = "000000";
+context.fillText("\"The trouble with a lot of Hollywood stuff is - I'm so bored with it. ",50,50);
+context.fillText("Tom Cruise - the character of the hero is locked in concrete. ",50,80);
+context.fillText("He must have a love interest, they must end up in bed, he never talks under torture.",50,110);
+context.fillText("The only surprise is whether they're on top of a cliff or underwater.\"",50,140);
+}
+if (introTimer2 > 50)
+{
+introTimer2 = 50;
+introTimer3++;
+if (crashPlayed2 === false)
+{
+crash.play();
+crashPlayed2 = true;
+}
+context.font = "30px verdana";
+context.fillStyle = "000000";
+context.fillText("-Peter Molyneux ",50,210);
+}
+if (introTimer3 > 50)
+{
+introTimer3 = 50;
+introTimer3++;
+if (crashPlayed3 === false)
+{
+crashPlayed3 = true;
+crash.play();
+}
+context.font = "30px verdana";
+context.fillStyle = "000000";
+context.font = "70px verdana";
+context.fillText("TOM",480,300);
+context.fillStyle = "ff0000";
+context.font = "30px verdana";
+context.fillText("Click Screen to Start ",400,570);
+context.drawImage(logoImage,logo.x,logo.y,logo.width,logo.height);
+window.addEventListener("click",onIntroClick,false);
+context.font = "30px verdana";
+context.fillStyle = "0000dd";
+context.fillText("ONLY WORKS PROPERLY IN CHROME. QUICK, SWITCH BROWSERS! ",40,594);
+}
+
+}
+
+
+if (splash === true)
+{
+
+
+
+if (testing === false)
+{
+intro.play();
+ron.x = canvas.width / 2 - 200;
+ron.y = canvas.height / 2;
+ron.width = 300;
+ron.height = 400;
+
+window.addEventListener("click",onClick,false);
+}
+
+if (conversation === 0)
+{
+context.font = "30px verdana";
+context.fillStyle = "000000";
+context.fillText("Click screen to advance.",100,570);
+}
+
+if (conversation === 0 && testing === false)
+{
+
+context.fillStyle = "#00ff00";
+context.fillText("Hey Tom, I was thinkin'...",100,250);
+}
+if (conversation === 1 && testing === false)
+{
+context.fillStyle = "#0000ff";
+context.fillText("Hey L. Ron's ghost! What's on your mind?",500,250);
+}
+if (conversation === 2 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Seeing as you're recently divorced and all...",100,250);
+}
+if (conversation === 3 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("I'd like to use you for one of my experiments.",100,250);
+}
+if (conversation === 4 && testing === false)
+{
+context.fillStyle = "#0000ff";
+context.fillText("What do you mean?",500,250);
+}
+if (conversation === 5 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Well, you know how it is, Tom...",100,250);
+}
+if (conversation === 6 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("there's been a lot of negative publicity about the church lately...",100,250);
+}
+if (conversation === 7 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("we need something big to get people interested again...",100,250);
+}
+if (conversation === 8 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("so we can brainwa....",200,250);
+}
+if (conversation === 9 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("...get their mon... ",200,250);
+}
+if (conversation === 10 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("I mean...ENLIGHTEN them.",200,250);
+}
+if (conversation === 11 && testing === false)
+{
+context.fillStyle = "#0000ff";
+context.fillText("Save the day, you mean? That's my job!",500,250);
+}
+if (conversation === 12 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Yes. That's right, Tom.",100,250);
+}
+if (conversation === 13 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("I have need of your thetans.",100,250);
+}
+if (conversation === 14 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("You see, your e-meter reading is so high...",100,250);
+}
+if (conversation === 15 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("that you tower above most mortals.",100,250);
+}
+if (conversation === 16 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("I've therefore created a new e-meter from those old... ",100,250);
+}
+if (conversation === 17 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("coin-op love tests you used to find in bars in the early 90s.",100,250);
+}
+if (conversation === 18 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("We will use this device to find you a new match, Tom.",100,250);
+}
+if (conversation === 19 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Perhaps there is someone out there with the same reading as you! ",100,250);
+}
+if (conversation === 20 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("And if the two of you were to fall in love...",100,250);
+}
+if (conversation === 21 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("the promotional implications for the church would be ASTOUNDING!",100,250);
+}
+if (conversation === 22 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("So what do you say, Tom?",100,250);
+}
+if (conversation === 23 && testing === false)
+{
+context.fillStyle = "#0000ff";
+context.fillText("I hope I find someone HOT!",500,250);
+}
+if (conversation === 24 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Of COURSE you will, Tom!",100,250);
+}
+if (conversation === 25 && testing === false)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Of course you will...",100,250);
+alphaDrain = true;
+window.removeEventListener("click",onClick,false);
+}
+
+if (alphaDrain === true)
+{
+context.globalAlpha -= .01;
+intro.volume -= .01;
+}
+
+if (splash === true && testing === false && loveScene1 === false)
+{
+context.drawImage(officesImage,offices.x,offices.y,offices.width,offices.height);
+context.drawImage(ronImage,ron.x,ron.y,ron.width,ron.height);
+context.drawImage(tomImage,tom.x,tom.y,tom.width,tom.height);
+context.drawImage(signImage,sign.x,sign.y,sign.width,sign.height);
+}
+}
+
+if (context.globalAlpha < 0.1)
+{
+conversation = 0;
+splash = false;
+alphaDrain = false;
+context.globalAlpha = 100;
+testing = true;
+intro.pause();
+}
+
+
+
+if (testing === true)
+{
+splash = false;
+window.addEventListener("click",onClick,false);
+
+computer.play();
+context.globalAlpha+= .01;
+context.drawImage(lRonImage,lRon.sourceX,lRon.sourceY,lRon.width,lRon.height,lRon.x,lRon.y,lRon.width,lRon.height);
+context.drawImage(tomHeadImage,tomHead.x,tomHead.y,tomHead.width,tomHead.height);
+
+if (conversation < 7)
+{
+context.font = "30px verdana";
+context.fillStyle = "000000";
+context.fillText("Click screen to advance.",380,590);
+}
+
+
+if (conversation === 0)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Now I'll need you to grab the thetan shafts, Tom.",50,520);
+}
+if (conversation >= 1)
+{
+context.drawImage(thetanImage,thetan.sourceX,thetan.sourceY,thetan.width,thetan.height,thetan.x,thetan.y,thetan.width,thetan.height);
+context.drawImage(thetanLeftImage,thetanLeft.sourceX,thetanLeft.sourceY,thetanLeft.width,thetanLeft.height,thetanLeft.x,thetanLeft.y,thetanLeft.width,thetanLeft.height);
+}
+if (conversation === 1)
+{
+context.fillStyle = "#00ff00";
+context.fillText("That's it, Tom.",50,520);
+}
+if (conversation === 2)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Now this machine operates on friction.",50,520);
+}
+if (conversation === 3)
+{
+context.fillStyle = "#00ff00";
+context.fillText("By applying vertical friction to the rods in a repetitive manner",50,520);
+}
+if (conversation === 4)
+{
+context.fillStyle = "#00ff00";
+context.fillText("we can determine your reading.",50,520);
+}
+if (conversation === 5)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Are you ready, Tom?",50,520);
+}
+if (conversation === 6)
+{
+context.fillStyle = "#00ff00";
+context.fillText("Remember not to stop until the reading is complete.",50,520);
+}
+if (conversation >= 7)
+{
+window.addEventListener("keydown",onKeyDown,false);
+window.addEventListener("keyup",onKeyUp,false);
+window.removeEventListener("click",onClick,false);
+
+
+context.font = "30px verdana";
+context.fillStyle = "#000000";
+context.fillText("Help Tom stimulate the e-meter",50,500);
+context.fillText("by pressing up, then down repeatedly.",50,530);
+context.fillText(eMeter,490,590);
+context.fillText("Thetan Reading (in zillions): ",50,590);
+}
+
+
+
+
+
+if (eMeter > 30 && eMeter < 45)
+{
+lRon.sourceX = 320;
+
+}
+if (eMeter > 40 && eMeter < 50)
+{
+lRon.sourceX = 0;
+}
+
+if (eMeter > 50 && eMeter < 60)
+{
+lRon.sourceX = 320;
+}
+
+if (eMeter > 60 && eMeter < 70)
+{
+lRon.sourceX = 0;
+}
+
+if (eMeter > 70 && eMeter < 80)
+{
+lRon.sourceX = 320;
+}
+
+if (eMeter > 80)
+{
+lRon.sourceX = 0;
+}
+
+if (eMeter > 100)
+{
+testing = false;
+processing = true;
+computer.pause();
+
+}
+}
+
+if (processing === true)
+{
+
+loading.play();
+loading.loop = true;
+context.fillStyle = "000000";
+context.fillRect(0,0,canvas.width,canvas.height);
+
+context.strokeStyle = "007700";
+context.strokeRect(50,50,1130,600);
+
+context.font = "40px verdana";
+context.fillStyle = "007700";
+context.fillText("CALCULATING THETAN SCORE FOR: CRUISE,TOM",100,200);
+context.fillText(jumble + "%",200,250);
+
+
+if (jumble < 1000000)
+{
+jumble += Math.random() * 40000;
+}
+if (jumble >= 1000000)
+{
+context.fillText("SEARCHING FOR MATCHES",150,320);
+window.setInterval(dots,2000);
+window.setInterval(dots2,4000);
+window.setInterval(dots3,6000);
+}
+}
+
+
+if (matchFound === true)
+{
+window.clearInterval(dots,2000);
+window.clearInterval(dots2,4000);
+window.clearInterval(dots3,6000);
+context.fillText("MATCH FOUND.",150,400);
+window.addEventListener("click",onClick2,false);
+context.fillText("CLICK TO FIND LOVE CRUISETOM.",150,560);
+}
+
+if (conversation2 === 1)
+{
+loading.pause();
+window.removeEventListener("click",onClick2,false);
+processing = false;
+loveScene1 = true;
+context.clearRect(0,0,canvas.width,canvas.height);
+jumble = 0;
+
+
+}
+
+
+if (loveScene1 === true)
+{
+processing = false;
+if (meetingPlayed === false)
+{
+meeting.play();
+meetingPlayed = true;
+}
+context.font = "30px verdana";
+context.fillStyle = "#000000";
+context.fillText("Press U to unite the star-cross'd lovers.",270,520);
+
+splash = false;
+intro.pause();
+window.addEventListener("keydown",onKeyDown,false);
+window.addEventListener("keyup",onKeyUp,false);
+tom2.x += tom.vx;
+question.x += question.vx;
+
+tom2.vy += tom.gravity;
+question.vy += question.gravity;
+
+if (loveScene1 === true && loveScene2 === false)
+{
+context.drawImage(countryImage,country.x,country.y,country.width,country.height);
+}
+context.drawImage(tom2Image,tom2.x,tom2.y,tom2.width,tom2.height);
+context.drawImage(questionImage,question.x,question.y,question.width,question.height);
+
+if (tom2.x - question.x < 350)
+{
+tom2.y += -6;
+question.y += -6;
+window.removeEventListener("keydown",onKeyDown,false);
+window.removeEventListener("keyup",onKeyUp,false);
+}
+if (tom2.x - question.x  < 150)
+{
+question.x = 400;
+tom2.x = 592;
+}
+if (tom2.y < -200)
+{
+loveScene1 = false;
+loveScene2 = true;
+meeting.pause();
+}
+}
+
+if (loveScene2 === true)
+{
+
+if(hasBeenChosen === false)
+{
+chosen = choices[Math.floor(Math.random() * 8)];
+hasBeenChosen = true;
+console.log(chosen);
+}
+introScreen = false;
+ splash = false;
+ testing = false;
+processing = false;
+context.drawImage(bedroomImage,bedroom.x,bedroom.y,bedroom.width,bedroom.height);
+
+
+
+breath.play();
+
+tom.x = 450;
+tom.y = 0;
+tom.width = 300;
+tom.height = 400;
+
+context.save();
+context.translate(tom.x + tom.width / 2,tom.y + tom.height);
+context.rotate(tom.rotation * Math.PI / -120);
+context.drawImage(tomImage,-tom.width / 2,-tom.height,tom.width,tom.height);
+context.restore();
+
+tom.rotation += 1.5;
+
+if (chosen === "dog")
+{
+dog.x = 450;
+dog.y = 0;
+dog.width = 300;
+dog.height = 400;
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : QUADRUPED",250,30);
+
+context.fillText("Try again to find all 8 combinations!",350,580);
+context.save();
+context.translate(dog.x + dog.width / 2,dog.y + dog.height);
+context.rotate(dog.rotation * Math.PI / 120);
+context.drawImage(dogImage,-dog.width / 2,-dog.height,dog.width,dog.height);
+context.restore();
+
+dog.rotation += 1.5;
+}
+
+if (chosen === "oatmeal")
+{
+oatmeal.x = 450;
+oatmeal.y = 0;
+oatmeal.width = 300;
+oatmeal.height = 400;
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : BOWL OF OATMEAL",180,30);
+context.fillText("Try again to find all 8 combinations!",350,580);
+
+context.save();
+context.translate(oatmeal.x + oatmeal.width / 2,oatmeal.y + oatmeal.height);
+context.rotate(oatmeal.rotation * Math.PI / 120);
+context.drawImage(oatmealImage,-oatmeal.width / 2,-oatmeal.height,oatmeal.width,oatmeal.height);
+context.restore();
+
+oatmeal.rotation += 1.5;
+}
+
+if (chosen === "ron")
+{
+ron.x = 450;
+ron.y = 0;
+ron.width = 300;
+ron.height = 400;
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : L. RON HUBBARD",200,30);
+context.fillText("Try again to find all 8 combinations!",350,580);
+
+context.save();
+context.translate(ron.x + ron.width / 2,ron.y + ron.height);
+context.rotate(ron.rotation * Math.PI / 120);
+context.drawImage(ronImage,-ron.width / 2,-ron.height,ron.width,ron.height);
+context.restore();
+
+ron.rotation += 1.5;
+}
+if (chosen === "xenu")
+{
+xenu.x = 450;
+xenu.y = 0;
+xenu.width = 300;
+xenu.height = 400;
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : XENU",250,30);
+context.fillText("Try again to find all 8 combinations!",350,580);
+
+context.save();
+context.translate(xenu.x + xenu.width / 2,xenu.y + xenu.height);
+context.rotate(xenu.rotation * Math.PI / 120);
+context.drawImage(xenuImage,-xenu.width / 2,-xenu.height,xenu.width,xenu.height);
+context.restore();
+
+xenu.rotation += 2;
+}
+
+if (chosen === "lorax")
+{
+lorax.x = 450;
+lorax.y = 0;
+lorax.width = 300;
+lorax.height = 400;
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : LORAX",250,30);
+context.fillText("Try again to find all 8 combinations!",350,580);
+
+context.save();
+context.translate(lorax.x + lorax.width / 2,lorax.y + lorax.height);
+context.rotate(lorax.rotation * Math.PI / 120);
+context.drawImage(loraxImage,-lorax.width / 2,-lorax.height,lorax.width,lorax.height);
+context.restore();
+
+lorax.rotation += 2;
+}
+
+if (chosen === "yankees")
+{
+yankees.x = 350;
+yankees.y = 0;
+yankees.width = 575;
+yankees.height = 225;
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : 1977 YANKEES",250,30);
+context.fillText("Try again to find all 8 combinations!",350,580);
+
+context.save();
+context.translate(yankees.x + yankees.width / 2,yankees.y + yankees.height);
+context.rotate(yankees.rotation * Math.PI / 120);
+context.drawImage(yankeesImage,-yankees.width / 2,-yankees.height,yankees.width,yankees.height);
+context.restore();
+
+yankees.rotation += 2;
+}
+
+if (chosen === "bag")
+{
+bag.x = 450;
+bag.y = 0;
+
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : BAG OF FLOUR",220,30);
+context.fillText("Try again to find all 8 combinations!",350,580);
+
+context.save();
+context.translate(bag.x + bag.width / 2,bag.y + yankees.height);
+context.rotate(bag.rotation * Math.PI / 120);
+context.drawImage(bagImage,-bag.width / 2,-bag.height,bag.width,bag.height);
+context.restore();
+
+bag.rotation += 2;
+}
+
+if (chosen === "cutout")
+{
+cutout.x = 450;
+cutout.y = 0;
+
+
+context.font = "30px verdana";
+context.fillStyle = "ffffff";
+context.fillText("Congratulations, Tom! Your soulmate is : CUTOUT OF SELF",200,30);
+context.fillText("Try again to find all 8 combinations!",350,580);
+
+context.save();
+context.translate(cutout.x + cutout.width / 2,cutout.y + cutout.height);
+context.rotate(cutout.rotation * Math.PI / 120);
+context.drawImage(cutoutImage,-cutout.width / 2,-cutout.height,cutout.width,cutout.height);
+context.restore();
+
+cutout.rotation += 2;
+}
+
+
+
+
+
+}
+
+
+}
+
+
+</script>
